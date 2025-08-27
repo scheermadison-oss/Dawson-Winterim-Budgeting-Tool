@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dawson Winterim Budgeting Tool</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="loginSection" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>🌍 Dawson Winterim Budgeting Tool</h1>
+                <p>Teacher Login Required</p>
+            </div>
+            
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form">
+                <h2>Login to Your Account</h2>
+                <form id="loginFormElement">
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" placeholder="your.email@dawsonschool.org" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="auth-btn">Login</button>
+                </form>
+                <p class="auth-switch">
+                    Don't have an account? 
+                    <a href="#" id="showSignup">Sign up here</a>
+                </p>
+            </div>
+            
+            <!-- Signup Form -->
+            <div id="signupForm" class="auth-form" style="display: none;">
+                <h2>Create Teacher Account</h2>
+                <form id="signupFormElement">
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" id="signupName" placeholder="Your full name" required>
+                    </div>
+                    <div class="input-group">
+                        <label>School Email</label>
+                        <input type="email" id="signupEmail" placeholder="your.email@dawsonschool.org" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="signupPassword" placeholder="Create a password (6+ characters)" required>
+                    </div>
+                    <button type="submit" class="auth-btn">Create Account</button>
+                </form>
+                <p class="auth-switch">
+                    Already have an account? 
+                    <a href="#" id="showLogin">Login here</a>
+                </p>
+            </div>
+            
+            <div id="authError" class="error-message" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Main Budget Tool (Hidden until logged in) -->
+    <div id="budgetTool" style="display: none;">
+        <!-- User Header -->
+        <div class="user-header">
+            <div class="user-info">
+                <span>Welcome, <strong id="userName">Teacher</strong></span>
+                <button id="logoutBtn" class="logout-btn">Logout</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="header">
+                <h1>🌍 Dawson Winterim Budgeting Tool</h1>
+                <p>Create your trip budget with automatic calculations</p>
+            </div>
+            
+            <div class="content">
+                <!-- Trip Information -->
+                <div class="section">
+                    <h2><span class="icon">📝</span>Trip Information</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Trip Name</label>
+                            <input type="text" id="tripName" placeholder="e.g., Costa Rica Conservation Experience">
+                        </div>
+                        <div class="form-group">
+                            <label>Teacher 1</label>
+                            <input type="text" id="teacher1" placeholder="First teacher name">
+                        </div>
+                        <div class="form-group">
+                            <label>Teacher 2</label>
+                            <input type="text" id="teacher2" placeholder="Second teacher name">
+                        </div>
+                        <div class="form-group">
+                            <label>Destination</label>
+                            <input type="text" id="destination" placeholder="Where are you going?">
+                        </div>
+                        <div class="form-group">
+                            <label>Duration (nights)</label>
+                            <input type="number" id="duration" value="5" min="1" oninput="calculateTotals()">
+                        </div>
+                        <div class="form-group">
+                            <label>Number of Students</label>
+                            <input type="number" id="numStudents" value="12" min="1" oninput="calculateTotals()">
+                        </div>
+                        <div class="form-group">
+                            <label>Number of Teachers</label>
+                            <input type="number" id="numTeachers" value="2" min="1" oninput="calculateTotals()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transportation -->
+                <div class="section">
+                    <h2><span class="icon">✈️</span>Transportation</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Airfare</label>
+                            <div class="input-stack">
+                                <input type="number" id="airfare" value="0" oninput="calculateTotals()" placeholder="Amount">
+                                <input type="text" id="airfare-source" placeholder="Source (e.g., United quote)">
+                            </div>
+                            <select id="airfareType" onchange="calculateTotals()">
+                                <option value="perperson">Per Person</option>
+                                <option value="total">Total Cost</option>
+                            </select>
+                            <small id="airfare-total" class="calculation-display"></small>
+                        </div>
+                        <div class="form-group">
+                            <label>Other Transport (per person)</label>
+                            <div class="input-stack">
+                                <input type="number" id="groundTransport" value="0" oninput="calculateTotals()" placeholder="Amount">
+                                <input type="text" id="groundTransport-source" placeholder="What transport? (e.g., shuttle bus)">
+                            </div>
+                            <small id="ground-total" class="calculation-display"></small>
+                        </div>
+                        <div class="form-group">
+                            <label>Rental Car</label>
+                            <div class="input-stack">
+                                <input type="number" id="rentalCar" value="0" oninput="calculateTotals()" placeholder="Amount">
+                                <input type="text" id="rentalCar-source" placeholder="Source (e.g., Enterprise quote)">
+                            </div>
+                            <select id="rentalCarType" onchange="calculateTotals()">
+                                <option value="total">Total Cost</option>
+                                <option value="perday">Per Day</option>
+                            </select>
+                            <small id="rental-total" class="calculation-display"></small>
+                        </div>
+                    </div>
+                    <div class="subtotal-row">
+                        <span>Transportation Total:</span>
+                        <span id="transportation-total">$0</span>
+                    </div>
+                </div>
+
+                <!-- Lodging -->
+                <div class="section">
+                    <h2><span class="icon">🏨</span>Lodging</h2>
+                    <div id="lodging-container">
+                        <!-- Default Hotel 1 -->
+                        <div class="item-row">
+                            <div class="form-group">
+                                <label>Hotel 1 Name</label>
+                                <input type="text" id="lodging-name-0" placeholder="Hotel name">
+                            </div>
+                            <div class="form-group">
+                                <label>Cost per night</label>
+                                <input type="number" id="lodging-cost-0" value="0" oninput="calculateTotals()" placeholder="Amount">
+                            </div>
+                            <div class="form-group">
+                                <label>Number of nights</label>
+                                <input type="number" id="lodging-nights-0" value="0" min="0" oninput="calculateTotals()">
+                            </div>
+                            <div class="form-group">
+                                <label>Source</label>
+                                <input type="text" id="lodging-source-0" placeholder="e.g., Booking.com, hotel direct">
+                            </div>
+                            <div class="total-display">
+                                <strong id="lodging-total-0">$0</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="add-button" id="add-lodging-btn">+ Add Hotel</button>
+                    <div class="subtotal-row">
+                        <span>Lodging Total:</span>
+                        <span id="lodging-total">$0</span>
+                    </div>
+                </div>
+
+                <!-- Food -->
+                <div class="section">
+                    <h2><span class="icon">🍽️</span>Food</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Breakfast (per person/day)</label>
+                            <input type="number" id="breakfast" value="12" oninput="calculateTotals()">
+                        </div>
+                        <div class="form-group">
+                            <label>Lunch (per person/day)</label>
+                            <input type="number" id="lunch" value="18" oninput="calculateTotals()">
+                        </div>
+                        <div class="form-group">
+                            <label>Dinner (per person/day)</label>
+                            <input type="number" id="dinner" value="25" oninput="calculateTotals()">
+                        </div>
+                    </div>
+                    <div class="food-calculation">
+                        <span id="food-calc">$55/person/day × 14 people × 5 days</span>
+                    </div>
+                    <div class="subtotal-row">
+                        <span>Food Total:</span>
+                        <span id="food-total">$3,850</span>
+                    </div>
+                </div>
+
+                <!-- Activities -->
+                <div class="section">
+                    <h2><span class="icon">🎯</span>Activities</h2>
+                    <div id="activities-container">
+                        <div class="empty-state">
+                            No activities added yet. Click "Add Activity" to get started.
+                        </div>
+                    </div>
+                    <button class="add-button" id="add-activity-btn">+ Add Activity</button>
+                    <div class="subtotal-row">
+                        <span>Activities Total:</span>
+                        <span id="activities-total">$0</span>
+                    </div>
+                </div>
+
+                <!-- Other Costs -->
+                <div class="section">
+                    <h2><span class="icon">💼</span>Other Costs</h2>
+                    <div id="other-costs-container">
+                        <div class="empty-state">
+                            No other costs added. Visas, insurance, tips, etc.
+                        </div>
+                    </div>
+                    <button class="add-button" id="add-other-cost-btn">+ Add Cost</button>
+                    <div class="subtotal-row">
+                        <span>Other Costs Total:</span>
+                        <span id="other-total">$0</span>
+                    </div>
+                </div>
+
+                <!-- Credit Card Fee -->
+                <div class="section">
+                    <h2><span class="icon">💳</span>Credit Card Fee</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Credit Card Fee (%)</label>
+                            <input type="number" id="creditCardFee" value="3" step="0.1" oninput="calculateTotals()">
+                        </div>
+                        <div class="form-group">
+                            <div class="calculation-box">
+                                <span id="creditcard-calc">3% of subtotal: $115.50</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contingency -->
+                <div class="section">
+                    <h2><span class="icon">🛡️</span>Contingency</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Contingency Amount</label>
+                            <input type="number" id="contingency" value="0" placeholder="Default: 10%" oninput="calculateTotals()">
+                        </div>
+                        <div class="form-group">
+                            <div class="calculation-box">
+                                <span id="contingency-calc">10% default: $385.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Budget Summary -->
+                <div class="summary-section">
+                    <h2>Budget Summary</h2>
+                    <div class="summary-grid">
+                        <div class="summary-breakdown">
+                            <div class="summary-row">
+                                <span>Transportation:</span>
+                                <span id="summary-transportation">$0</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Lodging:</span>
+                                <span id="summary-lodging">$0</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Food:</span>
+                                <span id="summary-food">$3,850</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Activities:</span>
+                                <span id="summary-activities">$0</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Other Costs:</span>
+                                <span id="summary-other">$0</span>
+                            </div>
+                            <div class="summary-row subtotal">
+                                <span>Subtotal:</span>
+                                <span id="summary-subtotal">$3,850</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Credit Card Fee:</span>
+                                <span id="summary-creditcard">$115.50</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Contingency:</span>
+                                <span id="summary-contingency">$385.00</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total Budget:</span>
+                                <span id="summary-total">$4,350.50</span>
+                            </div>
+                        </div>
+                        
+                        <div class="final-price">
+                            <h3>Price Per Student</h3>
+                            <div class="price" id="price-per-student">$363</div>
+                            <div class="per-student">This goes in your October catalog<br>
+                                <small id="group-breakdown">Total group: 12 students + 2 teachers = 14 people</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn-secondary" id="saveDraftBtn">Save Draft</button>
+                    <button class="btn-primary" id="submitBtn">Submit for Director Review</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>
