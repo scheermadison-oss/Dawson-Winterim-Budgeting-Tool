@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dawson Winterim Budgeting Tool</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            background: linear-gradient(135deg, #1a365d, #2d3748); 
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 1000px; 
+            margin: 20px auto; 
+            background: white; 
+            border-radius: 20px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header { 
+            background: linear-gradient(135deg, #1a365d, #2c5282); 
+            color: white; 
+            padding: 40px; 
+            text-align: center; 
+            border-radius: 20px 20px 0 0;
+        }
+        .header h1 { font-size: 2.5rem; margin: 0 0 10px 0; }
+        .header p { font-size: 1.1rem; opacity: 0.9; margin: 0; }
+        .content { padding: 30px; }
+        .section { 
+            background: #f7fafc; 
+            padding: 25px; 
+            margin-bottom: 25px; 
+            border-radius: 15px; 
+            border-left: 5px solid #2c5282;
+        }
+        .section h2 { 
+            color: #2d3748; 
+            margin: 0 0 20px 0; 
+            font-size: 1.4rem; 
+            display: flex; 
+            align-items: center; 
+        }
+        .icon { 
+            background: #2c5282; 
+            color: white; 
+            width: 35px; 
+            height: 35px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-right: 12px; 
+            font-size: 18px;
+        }
+        .form-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 20px; 
+        }
+        .form-item { 
+            background: white; 
+            padding: 15px; 
+            border-radius: 8px; 
+            border: 2px solid #e2e8f0; 
+        }
+        .form-item label { 
+            font-weight: 600; 
+            color: #4a5568; 
+            display: block; 
+            margin-bottom: 8px; 
+            font-size: 0.9rem; 
+        }
+        .form-value { 
+            color: #2d3748; 
+            font-size: 1rem; 
+            padding: 8px 0; 
+        }
+        .source-value { 
+            color: #6b7280; 
+            font-size: 0.9rem; 
+            font-style: italic; 
+            margin-top: 5px; 
+        }
+        .calculation { 
+            color: #2c5282; 
+            font-weight: 600; 
+            font-size: 0.9rem; 
+            margin-top: 8px; 
+        }
+        .subtotal { 
+            background: #e6fffa; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-top: 15px; 
+            display: flex; 
+            justify-content: space-between; 
+            font-weight: 600; 
+            color: #234e52; 
+        }
+        .summary { 
+            background: linear-gradient(135deg, #e6f3ff, #cce7ff); 
+            border: 3px solid #2c5282; 
+            border-radius: 20px; 
+            padding: 30px; 
+            margin-top: 30px; 
+        }
+        .summary h2 { 
+            text-align: center; 
+            color: #1a365d; 
+            font-size: 2rem; 
+            margin-bottom: 30px; 
+        }
+        .summary-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 30px; 
+            align-items: center; 
+        }
+        .summary-row { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 10px 15px; 
+            background: white; 
+            border-radius: 6px; 
+            margin-bottom: 8px; 
+        }
+        .summary-row.total { 
+            background: #2c5282; 
+            color: white; 
+            font-weight: bold; 
+            font-size: 1.1rem; 
+        }
+        .final-price { 
+            text-align: center; 
+            background: white; 
+            border-radius: 15px; 
+            padding: 25px; 
+            border: 3px solid #059669; 
+        }
+        .final-price h3 { 
+            color: #065f46; 
+            margin-bottom: 15px; 
+            font-size: 1.2rem; 
+        }
+        .price { 
+            font-size: 3rem; 
+            font-weight: bold; 
+            color: #059669; 
+            margin-bottom: 15px; 
+        }
+        .price-note { 
+            color: #6b7280; 
+            font-size: 0.9rem; 
+        }
+        .buttons { 
+            display: flex; 
+            gap: 20px; 
+            justify-content: flex-end; 
+            margin-top: 30px; 
+            padding-top: 20px; 
+            border-top: 2px solid #e2e8f0; 
+        }
+        .btn { 
+            padding: 15px 30px; 
+            border-radius: 10px; 
+            font-weight: 600; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 1rem; 
+        }
+        .btn-secondary { 
+            background: white; 
+            color: #4a5568; 
+            border: 2px solid #e2e8f0; 
+        }
+        .btn-primary { 
+            background: linear-gradient(135deg, #059669, #047857); 
+            color: white; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 Dawson Winterim Budgeting Tool</h1>
+            <p>Create your trip budget with automatic calculations</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2><span class="icon">📝</span>Trip Information</h2>
+                <div class="form-grid">
+                    <div class="form-item">
+                        <label>Trip Name</label>
+                        <div class="form-value">Costa Rica Conservation Experience</div>
+                    </div>
+                    <div class="form-item">
+                        <label>Teacher 1</label>
+                        <div class="form-value">Ms. Johnson</div>
+                    </div>
+                    <div class="form-item">
+                        <label>Teacher 2</label>
+                        <div class="form-value">Mr. Smith</div>
+                    </div>
+                    <div class="form-item">
+                        <label>Destination</label>
+                        <div class="form-value">San José, Costa Rica</div>
+                    </div>
+                    <div class="form-item">
+                        <label>Duration (nights)</label>
+                        <div class="form-value">7 nights</div>
+                    </div>
+                    <div class="form-item">
+                        <label>Number of Students</label>
+                        <div class="form-value">14 students</div>
+                    </div>
+                    <div class="form-item">
+                        <label>Number of Teachers</label>
+                        <div class="form-value">2 teachers</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><span class="icon">✈️</span>Transportation</h2>
+                <div class="form-grid">
+                    <div class="form-item">
+                        <label>Airfare</label>
+                        <div class="form-value">$650 per person</div>
+                        <div class="source-value">United Airlines quote</div>
+                        <div class="calculation">16 people × $650 = $10,400</div>
+                    </div>
+                    <div class="form-item">
+                        <label>Other Transport</label>
+                        <div class="form-value">$45 per person</div>
+                        <div class="source-value">Airport shuttle service</div>
+                        <div class="calculation">Total: $720</div>
+                    </div>
+                    <div class="form-item">
+                        <label>Rental Car</label>
+                        <div class="form-value">$85 per day</div>
+                        <div class="source-value">Budget Rent-a-Car</div>
+                        <div class="calculation">7 days × $85 = $595</div>
+                    </div>
+                </div>
+                <div class="subtotal">
+                    <span>Transportation Total:</span>
+                    <span>$11,715</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><span class="icon">🏨</span>Lodging</h2>
+                <div class="form-grid">
+                    <div class="form-item">
+                        <label>Hotel Presidente</label>
+                        <div class="form-value">$280 per night × 3 nights</div>
+                        <div class="source-value">Booking.com</div>
+                        <div class="calculation">Total: $840</div>
+                    </div>
+                    <div class="form-item">
+                        <label>Rainforest Lodge</label>
+                        <div class="form-value">$320 per night × 4 nights</div>
+                        <div class="source-value">Direct booking</div>
+                        <div class="calculation">Total: $1,280</div>
+                    </div>
+                </div>
+                <div class="subtotal">
+                    <span>Lodging Total:</span>
+                    <span>$2,120</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><span class="icon">🍽️</span>Food</h2>
+                <div class="form-grid">
+                    <div class="form-item">
+                        <label>Meals per person per day</label>
+                        <div class="form-value">Breakfast: $15 | Lunch: $22 | Dinner: $28</div>
+                        <div class="calculation">$65/person/day × 16 people × 7 days = $7,280</div>
+                    </div>
+                </div>
+                <div class="subtotal">
+                    <span>Food Total:</span>
+                    <span>$7,280</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><span class="icon">🎯</span>Activities</h2>
+                <div class="form-grid">
+                    <div class="form-item">
+                        <label>Manuel Antonio National Park</label>
+                        <div class="form-value">$25 per person</div>
+                        <div class="source-value">Park website</div>
+                        <div class="calculation">16 people × $25 = $400</div>
+                    </div>
+                    <div class="form-item">
+                        <label>Zip Line Tour</label>
+                        <div class="form-value">$75 per person</div>
+                        <div class="source-value">Adventure Tours CR</div>
+                        <div class="calculation">16 people × $75 = $1,200</div>
+                    </div>
+                </div>
+                <div class="subtotal">
+                    <span>Activities Total:</span>
+                    <span>$1,600</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><span class="icon">💼</span>Other Costs</h2>
+                <div class="form-grid">
+                    <div class="form-item">
+                        <label>Travel Insurance</label>
+                        <div class="form-value">$450</div>
+                        <div class="source-value">World Nomads</div>
+                    </div>
+                </div>
+                <div class="subtotal">
+                    <span>Other Costs Total:</span>
+                    <span>$450</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><span class="icon">💳</span>Credit Card Fee</h2>
+                <div class="form-grid">
+                    <div class="form-item">
+                        <label>Automatic 3% Fee</label>
+                        <div class="calculation">3% of $23,165 subtotal = $694.95</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><span class="icon">🛡️</span>Contingency</h2>
+                <div class="form-grid">
+                    <div class="form-item">
+                        <label>Safety Buffer</label>
+                        <div class="calculation">10% default = $2,316.50</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary">
+                <h2>Budget Summary</h2>
+                <div class="summary-grid">
+                    <div>
+                        <div class="summary-row">
+                            <span>Transportation:</span>
+                            <span>$11,715</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Lodging:</span>
+                            <span>$2,120</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Food:</span>
+                            <span>$7,280</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Activities:</span>
+                            <span>$1,600</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Other Costs:</span>
+                            <span>$450</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Credit Card Fee:</span>
+                            <span>$694.95</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Contingency:</span>
+                            <span>$2,316.50</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total Budget:</span>
+                            <span>$26,175.45</span>
+                        </div>
+                    </div>
+                    
+                    <div class="final-price">
+                        <h3>Price Per Student</h3>
+                        <div class="price">$1,870</div>
+                        <div class="price-note">
+                            This goes in your October catalog<br>
+                            <small>Total group: 14 students + 2 teachers = 16 people</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button class="btn btn-secondary">Save Draft</button>
+                <button class="btn btn-primary">Submit for Director Review</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
